@@ -1,12 +1,9 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 
 class MainPage:
-    # Локаторы вопросов в разделе "Вопросы о важном". х - номер вопроса
-    def heading_button(self, x): return [By.ID, f"accordion__heading-{x}"]
-    # Локаторы ответов в разделе "Вопросы о важном". х - номер ответа
-    def panel_text(self, x): return [By.XPATH, f".//div[@id='accordion__heading-{x}']/following::div/p"]
-
     # Кнопка согласия использования кук
     cookie_confirm_button = [By.ID, 'rcc-confirm-button']
 
@@ -16,28 +13,96 @@ class MainPage:
     # Кнопка Заказать в подвале
     footer_order_btn = [By.XPATH, './/div[@class="Home_FinishButton__1_cWm"]/button[text()="Заказать"]']
 
+    @staticmethod
+    def item_heading_text(x):
+        """
+        Вопрос в пункте разделе "Вопросы о важном"
+
+        :param x: номер пункта
+
+        :return: локатор на текст вопроса
+        """
+
+        return By.XPATH, f".//div[@id = 'accordion__heading-{x}']"
+
+    @staticmethod
+    def item_panel_text(x):
+        """
+        Ответ в пункте разделе "Вопросы о важном"
+
+        :param x: номер пункта
+
+        :return: локатор на текст ответа
+        """
+        return By.XPATH, f".//div[@id='accordion__heading-{x}']/following::div/p"
+
     def __init__(self, driver):
         self.driver = driver
 
-    # клик по заголовку с вопросом. х - номер вопроса
-    def click_accordion_item_heading_button(self, item_number):
-        self.driver.find_element(*self.heading_button(item_number)).click()
-        a = 0
+    def click_accordion_item_heading(self, item_number):
+        """
+        Cкролирует к заголовку с вопросом и клик по нему.
 
-    # метод возвращает текст ответа
-    def accordion_item_panel_text(self, item_number):
-        return self.driver.find_element(*self.panel_text(item_number)).text
+        :param item_number: Номер заголовка
+        """
 
-    # кликаем по кнопке согласия с куками, если найдем
+        element = self.driver.find_element(*self.item_heading_text(item_number))
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+
+        WebDriverWait(self.driver, 3).until(
+            expected_conditions.element_to_be_clickable(self.item_heading_text(item_number)))
+
+        self.driver.find_element(*self.item_heading_text(item_number)).click()
+
+    def accordion_item_texts(self, item_number):
+        """
+        Возвращает тексты вопроса и соответствующего ему ответа
+
+        :param item_number: Номер вопроса
+
+        :return: Кортеж с текстами вопроса и ответа
+        """
+
+        WebDriverWait(self.driver, 3).until(
+            expected_conditions.element_to_be_clickable(self.item_panel_text(item_number)))
+
+        return (self.driver.find_element(*self.item_heading_text(item_number)).text,
+                self.driver.find_element(*self.item_panel_text(item_number)).text)
+
     def click_cookie_confirm_button(self):
+        """
+        Кликает по кнопке согласия с куками, если таковая найдена
+        """
+
         elements = self.driver.find_elements(*self.cookie_confirm_button)
         if len(elements) > 0:
             self.driver.find_element(*self.cookie_confirm_button).click()
 
-    # кликаем по кнопке Заказать в шапке
+    def click_order_button(self, button):
+        """
+        Кликает по кнопке Заказать
+
+        :param button:  Строка указывающая где искать кнопку
+         возможные вариатны: 'in_header' - в шапке или 'in_footer' - в подвале
+        """
+
+        if button == 'in_header':
+            self.click_header_order_button()
+        elif button == 'in_footer':
+            self.click_footer_order_button()
+        else:
+            raise TypeError('неизвестное значение')
+
     def click_header_order_button(self):
+        """
+        Кликает по кнопке Заказать в шапке
+        """
+
         self.driver.find_element(*self.header_order_btn).click()
 
-    # кликаем по кнопке Заказать в подвале
     def click_footer_order_button(self):
+        """
+        Кликает по кнопке Заказать в подвале
+        """
+
         self.driver.find_element(*self.footer_order_btn).click()
