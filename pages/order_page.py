@@ -1,78 +1,8 @@
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from locators.order_page import OrderPageLocators as Locators
 
 
 class OrderPage:
-    # Имя клиента
-    name_input = [By.XPATH, './/input[@placeholder = "* Имя"]']
-
-    # Фамилия клиента
-    family_input = [By.XPATH, './/input[@placeholder = "* Фамилия"]']
-
-    # Адрес клиента
-    address_input = [By.XPATH, './/input[@placeholder = "* Адрес: куда привезти заказ"]']
-
-    # Станция метро
-    metro_input = [By.XPATH, './/input[@placeholder = "* Станция метро"]']
-
-    # Телефон клиента
-    phone_input = [By.XPATH, './/input[@placeholder = "* Телефон: на него позвонит курьер"]']
-
-    # Кнопка Далее
-    next_button = [By.XPATH, './/button[text()="Далее"]']
-
-    # Поле даты
-    date_input = [By.XPATH, './/input[@placeholder = "* Когда привезти самокат"]']
-
-    # Срок аренды
-    lease_input = [By.XPATH, './/div[@class = "Dropdown-placeholder"]']
-
-    # Кнопка Заказать
-    make_order_btn = [By.XPATH, './/button[contains(@class,"Button_Middle__1CSJM")][text()="Заказать"]']
-
-    # Кнопка Да
-    yes_bnt = [By.XPATH, './/button[text()="Да"]']
-
-    # Кнопка Посмотреть статус
-    view_status_btn = [By.XPATH, './/button[text() = "Посмотреть статус"]']
-
-    # Поле Комментарий для курьера
-    comment_input = [By.XPATH, './/input[@placeholder = "Комментарий для курьера"]']
-
-    @staticmethod
-    def metro_stations_list_element(text):
-        """
-        Элемент списка станций
-
-        :param text: название станции
-
-        :return: локатор на указанную станцию
-        """
-
-        return [By.XPATH, f'.//div[@class = "select-search__select"]//div[text()="{text}"]']
-
-    @staticmethod
-    def lease_period_list_element(text):
-        """
-        Элемент списка длительностей аренды
-
-        :param text: текст пункта, который надо выбрать
-
-        :return: локатор на указанный пункт
-        """
-
-        return [By.XPATH, f'.//div[@class="Dropdown-menu"]/div[text()="{text}"]']
-
-    @staticmethod
-    def color_checkbox(text):
-        """
-        Чекбокс с нужным цветом
-
-        :param text: текст чекбокса, который надо выбрать
-
-        :return: локатор на указанный чекбокс
-        """
-        return [By.XPATH, f'.//label[text()="{text}"]']
 
     def __init__(self, driver):
         self.driver = driver
@@ -84,7 +14,7 @@ class OrderPage:
         :param text: имя клиента
         """
 
-        self.driver.find_element(*self.name_input).send_keys(text)
+        self.driver.find_element(*Locators.name_input).send_keys(text)
 
     def set_client_family(self, text):
         """
@@ -93,7 +23,7 @@ class OrderPage:
         :param text: фамилия клиента
         """
 
-        self.driver.find_element(*self.family_input).send_keys(text)
+        self.driver.find_element(*Locators.family_input).send_keys(text)
 
     def set_client_address(self, text):
         """
@@ -102,7 +32,7 @@ class OrderPage:
         :param text: адрес клиента
         """
 
-        self.driver.find_element(*self.address_input).send_keys(text)
+        self.driver.find_element(*Locators.address_input).send_keys(text)
 
     def set_client_phone(self, text):
         """
@@ -111,7 +41,7 @@ class OrderPage:
         :param text: телефон клиента
         """
 
-        self.driver.find_element(*self.phone_input).send_keys(text)
+        self.driver.find_element(*Locators.phone_input).send_keys(text)
 
     def select_metro_station(self, text):
         """
@@ -120,15 +50,15 @@ class OrderPage:
         :param text: название станции метро
         """
 
-        self.driver.find_element(*self.metro_input).click()
-        self.driver.find_element(*self.metro_stations_list_element(text)).click()
+        self.driver.find_element(*Locators.metro_input).click()
+        self.driver.find_element(*Locators.metro_stations_list_element(text)).click()
 
     def click_next_button(self):
         """
         Нажимает кнопку Далее
         """
 
-        self.driver.find_element(*self.next_button).click()
+        self.driver.find_element(*Locators.next_button).click()
 
     def set_start_date(self, text):
         """
@@ -137,7 +67,7 @@ class OrderPage:
         :param text: дата
         """
 
-        element = self.driver.find_element(*self.date_input)
+        element = self.driver.find_element(*Locators.date_input)
         element.send_keys(text)
         element.send_keys(Keys.RETURN)
 
@@ -148,8 +78,8 @@ class OrderPage:
         :param text: текст пункта, который надо выбрать
         """
 
-        self.driver.find_element(*self.lease_input).click()
-        self.driver.find_element(*self.lease_period_list_element(text)).click()
+        self.driver.find_element(*Locators.lease_input).click()
+        self.driver.find_element(*Locators.lease_period_list_element(text)).click()
 
     def set_color(self, text):
         """
@@ -158,7 +88,7 @@ class OrderPage:
         :param text: цвет самоката
         """
 
-        self.driver.find_element(*self.color_checkbox(text)).click()
+        self.driver.find_element(*Locators.color_checkbox(text)).click()
 
     def set_comment(self, text):
         """
@@ -167,27 +97,27 @@ class OrderPage:
         :param text: текст комментария
         """
 
-        self.driver.find_element(*self.comment_input).send_keys(text)
+        self.driver.find_element(*Locators.comment_input).send_keys(text)
 
     def click_make_order_button(self):
         """
         Кликает по кнопке Заказать
         """
 
-        self.driver.find_element(*self.make_order_btn).click()
+        self.driver.find_element(*Locators.make_order_btn).click()
 
     def click_yes_button(self):
         """
         Кликает по кнопке Да
         """
 
-        self.driver.find_element(*self.yes_bnt).click()
+        self.driver.find_element(*Locators.yes_bnt).click()
 
     def click_view_status(self):
         """
         Кликает по кнопке Посмотреть статус
         """
-        self.driver.find_element(*self.view_status_btn).click()
+        self.driver.find_element(*Locators.view_status_btn).click()
 
     def make_order(self, user):
         """

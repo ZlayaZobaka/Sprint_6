@@ -1,15 +1,10 @@
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
+from locators.base_page import BasePageLocators as Locators
+
 
 class BasePage:
-    # Локатор на логотип Яндекса
-    yandex_link = [By.XPATH, './/a[@href = "//yandex.ru"]']
-
-    # Локатор на логотип «Самоката»
-    main_page_link = [By.XPATH, './/a[@href = "/"]']
-
     def __init__(self, driver):
         self.driver = driver
 
@@ -18,14 +13,14 @@ class BasePage:
         Кликает по логотипу Яндекса
         """
 
-        self.driver.find_element(*self.yandex_link).click()
+        self.driver.find_element(*Locators.yandex_link).click()
 
     def click_go_to_main_page_link(self):
         """
         Кликает на логотип «Самоката»
         """
 
-        self.driver.find_element(*self.main_page_link).click()
+        self.driver.find_element(*Locators.main_page_link).click()
 
     def switch_to_new_window(self, url):
         """
